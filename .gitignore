@@ -1,0 +1,8 @@
+*.javac
+*.swp
+
+lib/
+oldlib/
+war/WEB-INF/lib
+
+war/xdataht.properties

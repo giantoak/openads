@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="xdataht" default="all" basedir=".">
+
+	<property file="build.properties" />
+
+	<target name="javac" description="Compile java source to bytecode">
+		<path id="project.class.path">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="war/WEB-INF/lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<mkdir dir="build/classes" />
+		<property name="myclasspath" refid="project.class.path"></property>
+		<echo message="Classpath = ${myclasspath}"></echo>
+		<javac srcdir="src" includes="**" encoding="utf-8" destdir="build/classes" source="1.6" target="1.6" nowarn="true" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="javac" description="Create a jar file">
+		<jar destfile="war/WEB-INF/lib/xdataht.jar">
+			<fileset dir="build/classes"></fileset>
+		</jar>
+		<copy file="war/WEB-INF/lib/xdataht.jar" todir="scripts/precluster"/>
+	</target>
+	
+	<target name="war" depends="jar" description="Create a war file">
+		<delete file="${build.path}/openads.war" failonerror="false" />
+		<delete file="${build.path}/xdataht.war" failonerror="false" />
+		<delete dir="${build.path}/openads" failonerror="false" />
+		<delete dir="${build.path}/xdataht" failonerror="false" />
+		<jar destfile="${build.path}/openads.war">
+			<zipfileset dir="war">
+			</zipfileset>
+		</jar>
+		<delete file="war/WEB-INF/lib/xdataht.jar" failonerror="false" />
+	</target>
+
+	<target name="deploy" depends="war">
+	</target>
+	
+	<target name="clean" description="Cleans this project">
+		<delete dir="build/classes" failonerror="false" />
+	</target>
+	
+	<target name="all">
+		<antcall target="clean" />
+		<antcall target="deploy" />
+		<antcall target="clean" />
+	</target>
+
+</project>

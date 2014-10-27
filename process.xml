@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="xdataht" default="all" basedir=".">
+
+	<target name="path">
+		<path id="project.class.path">
+			<fileset dir="scripts/precluster">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+	</target>
+	
+	<target name="cluster" depends="path" description="Create memex_oculus.ads_clusters from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.clustering.Cluster">
+		</java>
+	</target>
+
+	<target name="clusterlocations" depends="path" description="Create memex_oculus.clusters_locations from memex_oculus.ads_clusters">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.LocationCluster">
+		</java>
+	</target>
+
+	<target name="clusterlinks" depends="path" description="Create memex_oculus.clusters_links from memex_oculus.ads_clusters">
+		<java classpathref="project.class.path" classname="oculus.memex.graph.ClusterLinks">
+		</java>
+	</target>
+
+	<target name="clusterdetails" depends="path" description="Create memex_oculus.clusters_details from memex_oculus.ads_clusters">
+		<java classpathref="project.class.path" classname="oculus.memex.clustering.ClusterDetails">
+		</java>
+	</target>
+
+	<target name="ads_prices" depends="path" description="Create memex_oculus.ads_price_phones from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.extraction.AdExtraBadPhones">
+		</java>
+	</target>
+
+	<target name="ads_extracted" depends="path" description="Create memex_oculus.ads_extracted,ads_phones,ads_bad_phones from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.extraction.AdExtraction">
+		</java>
+	</target>
+
+	<target name="ads_images" depends="path" description="Create memex_oculus.ads_images from memex_ht.images and memex_ht.images_attributes">
+		<java classpathref="project.class.path" classname="oculus.memex.image.AdImages">
+		</java>
+	</target>
+
+	<target name="ads_keywords" depends="path" description="Create memex_oculus.ads_keywords from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.concepts.AdKeywords">
+		</java>
+	</target>
+
+	<target name="ads_locations" depends="path" description="Create memex_oculus.ads_locations from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.geo.AdLocations">
+		</java>
+	</target>
+
+	<target name="locationtime" depends="path" description="Create memex_oculus.locationtime from memex_oculus.locations">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.LocationTimeAggregation">
+		</java>
+	</target>
+
+	<target name="time" depends="path" description="Create memex_oculus.temporal from memex_ht.ads">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.TimeAggregation">
+		</java>
+	</target>
+
+	<target name="attributelinks" depends="path" description="Create memex_oculus.attributes and memex_oculus.attributes_links">
+		<java classpathref="project.class.path" classname="oculus.memex.graph.AttributeLinks">
+		</java>
+	</target>
+
+	<target name="attributelocation" depends="path" description="Create memex_oculus.attributes_locations from memex_oculus.attributes">
+		<java classpathref="project.class.path" classname="oculus.memex.aggregation.AttributeLocation">
+		</java>
+	</target>
+
+	<target name="attributedetails" depends="path" description="Create memex_oculus.attribute_details from memex_oculus.attributes">
+		<java classpathref="project.class.path" classname="oculus.memex.clustering.AttributeDetails">
+		</java>
+	</target>
+				
+		
+	
+	<target name="all">
+		<antcall target="ads_images" />
+		<antcall target="ads_keywords" />
+		<antcall target="ads_prices" />
+		<antcall target="ads_extracted" />
+		<antcall target="ads_locations" />
+		<antcall target="locationtime" />
+		<antcall target="time" />
+		<antcall target="cluster" />
+		<antcall target="clusterlocations" />
+		<antcall target="clusterdetails" />
+		<antcall target="clusterlinks" />
+		<antcall target="attributelinks" />
+		<antcall target="attributelocation" />
+		<antcall target="attributedetails" />
+	</target>
+
+</project>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="xdataht" default="all" basedir=".">
+
+	<property file="build.properties" />
+	
+	<target name="all">
+		<ant dir="." inheritall="false" antfile="build.xml" target="clean"></ant>
+		<ant dir="." inheritall="false" antfile="build.xml" target="jar"></ant>
+		<copy file="remote/remoteweb.xml" tofile="war/WEB-INF/web.xml" overwrite="true"></copy>
+		<jar destfile="${build.path}/xdataht.war">
+			<zipfileset dir="war">
+			</zipfileset>
+		</jar>
+		<delete file="war/WEB-INF/lib/xdataht.jar" failonerror="false" />
+     	<sshexec host="xdata-ht" trust="yes" username="xdata" password="xdata4oculus" command="/home/xdata/tomcat/bin/shutdown.sh"/>
+
+		<sshexec host="xdata-ht" trust="yes" username="xdata" password="xdata4oculus" command="rm -rf /home/xdata/tomcat/webapps/xd*"/>
+        <scp todir="xdata:xdata4oculus@xdata-ht:/home/xdata/tomcat/webapps" trust="yes">
+            <fileset file="${build.path}/xdataht.war"/>
+        </scp>
+     	<sshexec host="xdata-ht" trust="yes" username="xdata" password="xdata4oculus" command="/home/xdata/tomcat/bin/startup.sh"/>
+
+		<copy tofile="war/WEB-INF/web.xml" file="remote/localweb.xml" overwrite="true"></copy>
+		<ant dir="." inheritall="false" antfile="build.xml" target="clean"></ant>
+	</target>
+
+</project>

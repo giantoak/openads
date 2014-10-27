@@ -1,0 +1,77 @@
+<!DOCTYPE web-app PUBLIC
+"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+"http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+	<display-name>Memex HT Server</display-name>
+
+	<session-config>
+        <session-timeout>
+            60
+        </session-timeout>
+    </session-config>
+    
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>ocweb</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ocweb</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+    <login-config>
+      <auth-method>FORM</auth-method>
+      <realm-name>ocweb</realm-name>
+      <form-login-config>
+        <form-login-page>/OpenAdsLogin.html</form-login-page>
+        <form-error-page>/OpenAdsLogin.html</form-error-page>
+      </form-login-config>
+    </login-config>
+    
+	<servlet>
+		<servlet-name>rest</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>oculus.memex.rest</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+
+	<!-- Config File Location -->
+	<!-- Provide the path to the config defaults override properties file here to override the default values -->
+	<context-param>
+		<param-name>apertureConfig</param-name>
+		<param-value>res:///xdataht.properties</param-value>
+	</context-param>
+	
+    <!-- Configure the xdataht server location -->
+	<context-param>
+        <param-name>xdataht.url</param-name>
+        <param-value>https://localhost:8080/openads</param-value>
+    </context-param>
+
+
+	<!-- Servlet config must run on app deployment -->	
+	<listener>
+    	<listener-class>oculus.memex.init.DBInitListener</listener-class>
+	</listener>	
+	
+	<listener>
+  		<listener-class>net.sf.ehcache.constructs.web.ShutdownListener</listener-class>
+	</listener>	
+	
+	<servlet-mapping>
+		<servlet-name>rest</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+    
+	<welcome-file-list>
+		<welcome-file>overview.html</welcome-file>
+	</welcome-file-list>
+	
+</web-app>
